@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- fontawesome icons  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- inline css -->
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            font-family: arial;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .grid-container,
+        .pwdBox,
+        .checkBox {
+            display: grid;
+        }
+
+        .grid-container {
+            grid-template-columns: auto;
+            padding: 50px 10px;
+            justify-content: center;
+            align-content: center;
+            height: 100vh;
+        }
+
+        .grid-item {
+            background-color: #23225c;
+            box-shadow: 1px 1px 8px 1px rgba(255, 255, 255, 0.2);
+            padding: 40px 20px;
+            text-align: center;
+            width: 450px;
+        }
+
+        .grid-item h2 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: normal;
+            margin-bottom: 20px;
+        }
+
+        .pwdBox {
+
+            grid-template-columns: 85% 15%;
+            color: white;
+            padding: 6px;
+            background: #141538;
+
+        }
+
+        .pwdBox input {
+            text-align: left;
+            font-size: 1.3rem;
+            width: 100%;
+            background-color: #141538;
+            border: none;
+            height: 30px;
+            color: white;
+        }
+
+        .pwdBox div {
+            padding: 10px;
+        }
+
+        .checkBox {
+
+            grid-template-columns: 90% 10%;
+            color: white;
+
+        }
+
+        .checkBox p {
+            text-align: left;
+        }
+
+        .checkLeft {
+            text-align: right;
+        }
+
+        .checkBox p,
+        .checkBox input {
+            margin: 15px 0px;
+        }
+
+        .checkBox .check {
+            width: 15px;
+            height: 15px;
+        }
+
+        .checkBox span {
+            padding: 0.5px 2px;
+        }
+
+        #iconBox {
+            background-color: #3a3b98;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #pwdBtn {
+            width: 100%;
+            padding: 12px;
+            background-color: #3b3b9a;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            font-weight: bolder;
+        }
+
+        #len {
+            width: 100%;
+        }
+
+        input#secretKey:focus-visible {
+            outline: none;
+        }
+
+
+        @media screen and (max-width:767px) {
+            .grid-item {
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width:576px) {
+            .checkBox {
+
+                grid-template-columns: 85% 15%;
+
+            }
+
+            .pwdBox p {
+
+                font-size: 0.8rem;
+            }
+
+        }
+    </style>
+</head>
+
+<body style="background-color: #3b3b97;">
+
+    <div class="grid-container">
+        <div class="grid-item">
+            <h2>Password Generator</h2>
+            <div class="pwdBox">
+                <div>
+                    <input id="secretKey" value="" disabled>
+                </div>
+                <div id="iconBox" onclick="copyPass();">
+                    <span>
+                        <i class="fa fa-regular fa-clipboard " style="color: #ffffff; font-size: 1.3rem;">
+                        </i>
+                    </span>
+                </div>
+            </div>
+            <form id="myForm" action="" method="post">
+                <div class="checkBox">
+                    <div>
+                        <p>Password Length</p>
+                    </div>
+                    <div class="lenBox">
+                        <input type="number" id="len" name="pwdLen" min="4" max="20" required>
+                    </div>
+                    <div>
+                        <p>Include uppercase letters</p>
+                    </div>
+                    <div class="checkLeft">
+                        <span>
+                            <input type="checkbox" id="checkUpper" name="" value="">
+                        </span>
+                    </div>
+                    <div>
+                        <p>Include lowercase letters</p>
+                    </div>
+                    <div class="checkLeft">
+                        <span>
+                            <input type="checkbox" id="checkLower" name="" value="">
+                        </span>
+                    </div>
+                    <div>
+                        <p>Include numbers</p>
+                    </div>
+                    <div class="checkLeft">
+                        <span>
+                            <input type="checkbox" id="checkNum" name="" value="">
+                        </span>
+                    </div>
+                    <div>
+                        <p>Include symbols</p>
+                    </div>
+                    <div class="checkLeft">
+                        <span>
+                            <input type="checkbox" id="checkSymbol" name="" value="">
+                        </span>
+                    </div>
+
+                </div>
+                <div>
+                    <button type="button" id="pwdBtn" onclick="myfunction();">Generate Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+
+        // single character generator functions 
+
+        let num = function () {
+            return Math.floor(Math.random() * 10);
+        }
+
+        let upper = function () {
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            return letters[Math.floor(Math.random() * letters.length)];
+        }
+
+        let lower = function () {
+            const letters = "abcdefghijklmnopqrstuvwxyz";
+            return letters[Math.floor(Math.random() * letters.length)];
+        }
+        let symbol = function () {
+            const symbols = "~@#$&?<>\/"
+            return symbols[Math.floor(Math.random() * symbols.length)];
+        }
+
+        // stored functions in array 
+
+        const checkArr = [upper, lower, num, symbol];
+
+
+        // mix pattern generator function
+
+        function patternGenerator(upper, lower, num, symbol) {
+
+            let password = "";
+
+            const arr = [upper, lower, num, symbol];
+
+            for (i = 0; i <= arr.length - 1; i++) {
+
+                if (arr[i] == true) {
+                    password += checkArr[i]();
+                }
+            }
+
+            return password;
+        }
+
+        //  generator button function
+
+        function myfunction() {
+
+            // stored user inputs 
+
+            let pwdLength = document.getElementById("len").value;
+            let isUpper = document.getElementById("checkUpper").checked;
+            let isLower = document.getElementById("checkLower").checked;
+            let isNumber = document.getElementById("checkNum").checked;
+            let isSymbol = document.getElementById("checkSymbol").checked;
+
+             // if entered password length is valid , call pwd generator function with user inputs as arguments
+
+            if (pwdLength >= 4 && pwdLength <= 20) {
+
+                let passkey = patternGenerator(isUpper, isLower, isNumber, isSymbol);
+
+                // if user clicked generator button with no inputs  
+
+                if (passkey === "") {
+                    alert("Please check atleast one validation");
+                }
+                
+                // if length of password generated is equal to user input length , display password
+
+                else if (passkey.length == pwdLength) {
+                    document.getElementById("secretKey").value = passkey;
+                    document.getElementById("myForm").reset();
+                   
+
+                }
+                
+                // if length of password generated is less than user input length
+                // create password of valid length with all conditions applied
+
+                else {
+
+                    while (passkey.length < pwdLength) {
+                        let restKey = patternGenerator(isUpper, isLower, isNumber, isSymbol);
+                        passkey += restKey;
+                    }
+                    passkey = passkey.substr(0, pwdLength);
+                    document.getElementById("secretKey").value = passkey;
+                    document.getElementById("myForm").reset();
+
+                }
+                
+            }
+            
+            // if entered length is invalid 
+
+                else {
+                    alert("Please enter valid password length");
+                }
+        }
+
+        // copy password function 
+
+        function copyPass() {
+            let code = document.getElementById("secretKey").value;
+            if (code !== "") {
+                navigator.clipboard.writeText(code);
+                alert("Password copied to clipboard");
+                document.getElementById("secretKey").value = "";
+                document.getElementById("myForm").reset();
+            }
+            else {
+                alert("Please Generate the password to get copied");
+                document.getElementById("secretKey").value = "";
+            }
+        }
+
+    </script>
+</body>
+
+</html>
